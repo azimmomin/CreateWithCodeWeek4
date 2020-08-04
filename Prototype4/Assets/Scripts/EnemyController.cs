@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public static Action OnEnemyDied;
+
     [SerializeField] private float speed = 3f;
 
     private Rigidbody enemyRigidbody = null;
@@ -17,5 +20,14 @@ public class EnemyController : MonoBehaviour
     {
         Vector3 lookDirection = (playerGameObject.transform.position - transform.position).normalized;
         enemyRigidbody.AddForce(lookDirection * speed);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bounds"))
+        {
+            OnEnemyDied?.Invoke();
+            Destroy(gameObject);
+        }
     }
 }
